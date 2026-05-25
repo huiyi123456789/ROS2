@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>机器人视频采集</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>机器人视频采集</h1>
+            <span id="status" class="status-idle">等待授权</span>
+        </header>
+
+        <main>
+            <div class="video-wrapper">
+                <video id="preview" autoplay playsinline muted></video>
+                <video id="playback" controls playsinline style="display:none;"></video>
+            </div>
+
+            <div id="info" class="info-bar">
+                <span id="timer">00:00</span>
+                <span id="size"></span>
+            </div>
+
+            <div class="controls">
+                <button id="btnStart" class="btn btn-record" disabled>
+                    <span class="icon">&#9654;</span> 开始录制
+                </button>
+                <button id="btnStop" class="btn btn-stop" disabled>
+                    <span class="icon">&#9632;</span> 停止录制
+                </button>
+                <button id="btnUpload" class="btn btn-upload" disabled>
+                    <span class="icon">&#8682;</span> 上传
+                </button>
+                <button id="btnDownload" class="btn btn-download" disabled>
+                    <span class="icon">&#8615;</span> 下载
+                </button>
+            </div>
+
+            <div id="uploadProgress" class="progress-bar" style="display:none;">
+                <div class="progress-fill"></div>
+                <span class="progress-text">0%</span>
+            </div>
+        </main>
+
+        <footer>
+            <p>服务器: <span id="serverUrl">http://localhost:8081</span></p>
+        </footer>
+    </div>
+
+    <script>
+        const SERVER_URL = 'http://localhost:8081/upload';
+
+        const preview = document.getElementById('preview');
+        const playback = document.getElementById('playback');
+        const statusEl = document.getElementById('status');
+        const timerEl = document.getElementById('timer');
+        const sizeEl = document.getElementById('size');
+        const btnStart = document.getElementById('btnStart');
+        const btnStop = document.getElementById('btnStop');
+        const btnUpload = document.getElementById('btnUpload');
+        const btnDownload = document.getElementById('btnDownload');
+        const progressBar = document.getElementById('uploadProgress');
+        const progressFill = progressBar.querySelector('.progress-fill');
+        const progressText = progressBar.querySelector('.progress-text');
+        const serverUrlEl = document.getElementById('serverUrl');
+
+        let stream = null;
+        let mediaRecorder = null;
+        let chunks = [];
+        let videoBlob = null;
+        let recordingTimer = null;
+        let elapsedSeconds = 0;
+
+        serverUrlEl.textContent = SERVER_URL;
+
+        function setStatus(text, type) {
+            statusEl.textContent = text;
+            statusEl.className = 'status-' + type;
+        }
+
+        function formatTime(sec) {
+            const m = String(Math.floor(sec / 60)).padStart(2, '0');
+            const s = String(sec % 60).padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        async function initCamera() {
+            try {
+                setStatus('请求摄像头...', 'idle');
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                });
+                preview.srcObject = stream;
+                btnStart.disabled = false;
+                setStatus('就绪', 'ready');
+            } catch (err) {
+                setStatus('摄像头权限被拒绝', 'error');
+                console.error('Camera error:', err);
+            }
+        }
+
+        function clearRecording() {
+            chunks = [];
+            videoBlob = null;
+            playback.style.display = 'none';
+            preview.style.display = 'block';
+            playback.src = '';
+            btnUpload.disabled = true;
+            btnDownload.disabled = true;
+            sizeEl.textContent = '';
+        }
+
+        btnStart.addEventListener('click', () => {
+            if (!stream) return;
+            clearRecording();
+
+            const mimeTypes = [
+                'video/webm;codecs=vp9',
+                'video/webm;codecs=vp8',
+                'video/webm',
+                'video/mp4'
+            ];
+            let mimeType = '';
+            for (const mt of mimeTypes) {
+                if (MediaRecorder.isTypeSupported(mt)) {
+                    mimeType = mt;
+                    break;
+                }
+            }
+
+            mediaRecorder = new MediaRecorder(stream, {
+                mimeType: mimeType || undefined,
+                videoBitsPerSecond: 2500000
+            });
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data && e.data.size > 0) {
+                    chunks.push(e.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                videoBlob = new Blob(chunks, { type: mediaRecorder.mimeType });
+                const url = URL.createObjectURL(videoBlob);
+                playback.src = url;
+                playback.style.display = 'block';
+                preview.style.display = 'none';
+                btnUpload.disabled = false;
+                btnDownload.disabled = false;
+                sizeEl.textContent = formatSize(videoBlob.size);
+
+                clearInterval(recordingTimer);
+                recordingTimer = null;
+            };
+
+            mediaRecorder.start(500);
+            elapsedSeconds = 0;
+            timerEl.textContent = '00:00';
+            btnStart.disabled = true;
+            btnStop.disabled = false;
+            btnDownload.disabled = true;
+            setStatus('录制中...', 'recording');
+
+            recordingTimer = setInterval(() => {
+                elapsedSeconds++;
+                timerEl.textContent = formatTime(elapsedSeconds);
+            }, 1000);
+        });
+
+        btnStop.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                btnStart.disabled = false;
+                btnStop.disabled = true;
+                setStatus('录制完成', 'ready');
+            }
+        });
+
+        btnDownload.addEventListener('click', () => {
+            if (!videoBlob) return;
+            const url = URL.createObjectURL(videoBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'robot_video_' + Date.now() + '.webm';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        btnUpload.addEventListener('click', async () => {
+            if (!videoBlob) return;
+
+            const formData = new FormData();
+            formData.append('video', videoBlob, 'robot_video_' + Date.now() + '.webm');
+
+            btnUpload.disabled = true;
+            progressBar.style.display = 'flex';
+            progressFill.style.width = '0%';
+            progressText.textContent = '0%';
+            setStatus('上传中...', 'recording');
+
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', SERVER_URL);
+
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const pct = Math.round((e.loaded / e.total) * 100);
+                        progressFill.style.width = pct + '%';
+                        progressText.textContent = pct + '%';
+                    }
+                };
+
+                xhr.onload = () => {
+                    progressBar.style.display = 'none';
+                    btnUpload.disabled = false;
+                    if (xhr.status === 200) {
+                        setStatus('上传成功', 'ready');
+                    } else {
+                        setStatus('上传失败: ' + xhr.status, 'error');
+                    }
+                };
+
+                xhr.onerror = () => {
+                    progressBar.style.display = 'none';
+                    btnUpload.disabled = false;
+                    setStatus('网络错误', 'error');
+                };
+
+                xhr.send(formData);
+            } catch (err) {
+                progressBar.style.display = 'none';
+                btnUpload.disabled = false;
+                setStatus('上传失败', 'error');
+                console.error(err);
+            }
+        });
+
+        initCamera();
+    </script>
+</body>
+</html>
