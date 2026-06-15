@@ -397,12 +397,14 @@ void SpawnWidget::fetchModelList()
 
 QString SpawnWidget::makeLidar2DSdf(const QString &name, double x, double y, double z)
 {
+    Q_UNUSED(x); Q_UNUSED(y); Q_UNUSED(z);
     return QString(
         "<?xml version=\"1.0\" ?>"
         "<sdf version=\"1.6\">"
         "  <model name=\"%1\">"
-        "    <pose>%2 %3 %4 0 0 0</pose>"
+        "    <static>true</static>"
         "    <link name=\"%1_link\">"
+        "      <inertial><mass>0.001</mass><inertia><ixx>1e-6</ixx><ixy>0</ixy><ixz>0</ixz><iyy>1e-6</iyy><iyz>0</iyz><izz>1e-6</izz></inertia></inertial>"
         "      <visual name=\"visual\">"
         "        <geometry><cylinder><radius>0.04</radius><length>0.03</length></cylinder></geometry>"
         "        <material><ambient>1 0 0 1</ambient></material>"
@@ -424,17 +426,19 @@ QString SpawnWidget::makeLidar2DSdf(const QString &name, double x, double y, dou
         "    </link>"
         "  </model>"
         "</sdf>"
-    ).arg(name).arg(x).arg(y).arg(z);
+    ).arg(name);
 }
 
 QString SpawnWidget::makeLidar3DSdf(const QString &name, double x, double y, double z)
 {
+    Q_UNUSED(x); Q_UNUSED(y); Q_UNUSED(z);
     return QString(
         "<?xml version=\"1.0\" ?>"
         "<sdf version=\"1.6\">"
         "  <model name=\"%1\">"
-        "    <pose>%2 %3 %4 0 0 0</pose>"
+        "    <static>true</static>"
         "    <link name=\"%1_link\">"
+        "      <inertial><mass>0.001</mass><inertia><ixx>1e-6</ixx><ixy>0</ixy><ixz>0</ixz><iyy>1e-6</iyy><iyz>0</iyz><izz>1e-6</izz></inertia></inertial>"
         "      <visual name=\"visual\">"
         "        <geometry><cylinder><radius>0.1</radius><length>0.07</length></cylinder></geometry>"
         "        <material><ambient>0.8 0.8 0.8 1</ambient></material>"
@@ -459,17 +463,19 @@ QString SpawnWidget::makeLidar3DSdf(const QString &name, double x, double y, dou
         "    </link>"
         "  </model>"
         "</sdf>"
-    ).arg(name).arg(x).arg(y).arg(z);
+    ).arg(name);
 }
 
 QString SpawnWidget::makeCameraSdf(const QString &name, double x, double y, double z)
 {
+    Q_UNUSED(x); Q_UNUSED(y); Q_UNUSED(z);
     return QString(
         "<?xml version=\"1.0\" ?>"
         "<sdf version=\"1.6\">"
         "  <model name=\"%1\">"
-        "    <pose>%2 %3 %4 0 0 0</pose>"
+        "    <static>true</static>"
         "    <link name=\"%1_link\">"
+        "      <inertial><mass>0.001</mass><inertia><ixx>1e-6</ixx><ixy>0</ixy><ixz>0</ixz><iyy>1e-6</iyy><iyz>0</iyz><izz>1e-6</izz></inertia></inertial>"
         "      <visual name=\"visual\">"
         "        <geometry><box><size>0.02 0.04 0.02</size></box></geometry>"
         "        <material><ambient>0 1 0 1</ambient></material>"
@@ -489,17 +495,19 @@ QString SpawnWidget::makeCameraSdf(const QString &name, double x, double y, doub
         "    </link>"
         "  </model>"
         "</sdf>"
-    ).arg(name).arg(x).arg(y).arg(z);
+    ).arg(name);
 }
 
 QString SpawnWidget::makeDepthCameraSdf(const QString &name, double x, double y, double z)
 {
+    Q_UNUSED(x); Q_UNUSED(y); Q_UNUSED(z);
     return QString(
         "<?xml version=\"1.0\" ?>"
         "<sdf version=\"1.6\">"
         "  <model name=\"%1\">"
-        "    <pose>%2 %3 %4 0 0 0</pose>"
+        "    <static>true</static>"
         "    <link name=\"%1_link\">"
+        "      <inertial><mass>0.001</mass><inertia><ixx>1e-6</ixx><ixy>0</ixy><ixz>0</ixz><iyy>1e-6</iyy><iyz>0</iyz><izz>1e-6</izz></inertia></inertial>"
         "      <visual name=\"visual\">"
         "        <geometry><box><size>0.02 0.05 0.03</size></box></geometry>"
         "        <material><ambient>0 0.6 1 1</ambient></material>"
@@ -518,17 +526,19 @@ QString SpawnWidget::makeDepthCameraSdf(const QString &name, double x, double y,
         "    </link>"
         "  </model>"
         "</sdf>"
-    ).arg(name).arg(x).arg(y).arg(z);
+    ).arg(name);
 }
 
 QString SpawnWidget::makeImuSdf(const QString &name, double x, double y, double z)
 {
+    Q_UNUSED(x); Q_UNUSED(y); Q_UNUSED(z);
     return QString(
         "<?xml version=\"1.0\" ?>"
         "<sdf version=\"1.6\">"
         "  <model name=\"%1\">"
-        "    <pose>%2 %3 %4 0 0 0</pose>"
+        "    <static>true</static>"
         "    <link name=\"%1_link\">"
+        "      <inertial><mass>0.001</mass><inertia><ixx>1e-6</ixx><ixy>0</ixy><ixz>0</ixz><iyy>1e-6</iyy><iyz>0</iyz><izz>1e-6</izz></inertia></inertial>"
         "      <sensor name=\"imu\" type=\"imu\">"
         "        <always_on>1</always_on><update_rate>200</update_rate>"
         "        <imu>"
@@ -550,5 +560,5 @@ QString SpawnWidget::makeImuSdf(const QString &name, double x, double y, double 
         "    </link>"
         "  </model>"
         "</sdf>"
-    ).arg(name).arg(x).arg(y).arg(z);
+    ).arg(name);
 }
