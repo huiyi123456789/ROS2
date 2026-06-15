@@ -38,9 +38,9 @@
       <inertial>
         <mass>0.1</mass>
         <inertia>
-          <ixx>1.25e-5</ixx><ixy>0</ixy><ixz>0</ixz>
-          <iyy>1.25e-5</iyy><iyz>0</iyz>
-          <izz>1.25e-5</izz>
+          <ixx>6.6e-5</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>6.6e-5</iyy><iyz>0</iyz>
+          <izz>1.25e-4</izz>
         </inertia>
       </inertial>
       <collision name="collision">
@@ -56,7 +56,10 @@
     <joint name="wheel_left_joint" type="revolute">
       <parent>base_link</parent>
       <child>wheel_left_link</child>
-      <axis><xyz>0 1 0</xyz><limit><lower>-1e16</lower><upper>1e16</upper></limit></axis>
+      <axis><xyz>0 1 0</xyz>
+        <limit><lower>-1e16</lower><upper>1e16</upper></limit>
+        <dynamics><damping>0.1</damping><friction>0.01</friction></dynamics>
+      </axis>
       <pose>0 0.18 -0.075 0 0 0</pose>
     </joint>
 
@@ -64,9 +67,9 @@
       <inertial>
         <mass>0.1</mass>
         <inertia>
-          <ixx>1.25e-5</ixx><ixy>0</ixy><ixz>0</ixz>
-          <iyy>1.25e-5</iyy><iyz>0</iyz>
-          <izz>1.25e-5</izz>
+          <ixx>6.6e-5</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>6.6e-5</iyy><iyz>0</iyz>
+          <izz>1.25e-4</izz>
         </inertia>
       </inertial>
       <collision name="collision">
@@ -82,7 +85,10 @@
     <joint name="wheel_right_joint" type="revolute">
       <parent>base_link</parent>
       <child>wheel_right_link</child>
-      <axis><xyz>0 1 0</xyz><limit><lower>-1e16</lower><upper>1e16</upper></limit></axis>
+      <axis><xyz>0 1 0</xyz>
+        <limit><lower>-1e16</lower><upper>1e16</upper></limit>
+        <dynamics><damping>0.1</damping><friction>0.01</friction></dynamics>
+      </axis>
       <pose>0 -0.18 -0.075 0 0 0</pose>
     </joint>
 
@@ -97,7 +103,7 @@
       </inertial>
       <collision name="collision">
         <geometry><cylinder><radius>0.025</radius><length>0.03</length></cylinder></geometry>
-        <surface><friction><ode><mu>0.05</mu><mu2>0.05</mu2></ode></friction></surface>
+        <surface><friction><ode><mu>0.8</mu><mu2>0.8</mu2></ode></friction></surface>
       </collision>
       <visual name="visual">
         <geometry><cylinder><radius>0.025</radius><length>0.03</length></cylinder></geometry>
@@ -127,7 +133,7 @@
       </inertial>
       <collision name="collision">
         <geometry><cylinder><radius>0.025</radius><length>0.03</length></cylinder></geometry>
-        <surface><friction><ode><mu>0.05</mu><mu2>0.05</mu2></ode></friction></surface>
+        <surface><friction><ode><mu>0.8</mu><mu2>0.8</mu2></ode></friction></surface>
       </collision>
       <visual name="visual">
         <geometry><cylinder><radius>0.025</radius><length>0.03</length></cylinder></geometry>
@@ -364,7 +370,7 @@
       <wheel_separation>0.36</wheel_separation>
       <wheel_diameter>0.10</wheel_diameter>
       <max_wheel_torque>5.0</max_wheel_torque>
-      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+      <max_wheel_acceleration>0.5</max_wheel_acceleration>
       <command_topic>cmd_vel</command_topic>
       <odometry_topic>odom</odometry_topic>
       <odometry_frame>odom</odometry_frame>
