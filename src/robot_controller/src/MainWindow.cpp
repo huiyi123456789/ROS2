@@ -53,7 +53,7 @@ void MainWindow::setupUI()
     controlWidget = new RobotControlWidget(node_, controller, this);
 
     QString robotSdfPath = QString::fromStdString(
-        std::getenv("HOME")) + "/ROS2/install/robot_proj/share/robot_proj/models/custom_robot/model.sdf";
+        std::getenv("HOME")) + "/ROS2/install/robot_proj/share/robot_proj/models/turtlebot3_waffle/model.sdf";
     spawnWidget = new SpawnWidget(node_, robotSdfPath, this);
 
     rightTabs = new QTabWidget();

@@ -53,7 +53,7 @@ def generate_launch_description():
     pkg_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     world_file = os.path.join(pkg_dir, 'worlds', 'classroom.world')
-    robot_sdf = os.path.join(pkg_dir, 'models', 'custom_robot', 'model.sdf')
+    robot_sdf = os.path.join(pkg_dir, 'models', 'turtlebot3_waffle', 'model.sdf')
 
     gazebo_model_path = _clean_gazebo_model_path()
 

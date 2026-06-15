@@ -8,8 +8,9 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     pkg_robot_description = FindPackageShare('robot_description')
+    pkg_tb3 = FindPackageShare('turtlebot3_description')
 
-    urdf_path = PathJoinSubstitution([pkg_robot_description, 'urdf', 'robot.urdf.xacro'])
+    urdf_path = PathJoinSubstitution([pkg_tb3, 'urdf', 'turtlebot3_waffle.urdf'])
     rviz_config = PathJoinSubstitution([pkg_robot_description, 'config', 'display.rviz'])
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
@@ -21,7 +22,7 @@ def generate_launch_description():
         output='screen',
         parameters=[{
             'use_sim_time': use_sim_time,
-            'robot_description': Command(['xacro ', urdf_path]),
+            'robot_description': Command(['xacro ', urdf_path, ' namespace:=', '']),
         }]
     )
 
