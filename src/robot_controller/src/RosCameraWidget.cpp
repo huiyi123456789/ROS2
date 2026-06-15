@@ -68,7 +68,7 @@ void RosCameraWidget::imageCallback(const sensor_msgs::msg::Image::SharedPtr msg
         img = img.rgbSwapped();
     }
 
-    frame_ = img.mirrored(false, true);
+    frame_ = img;
 
     update();
 }

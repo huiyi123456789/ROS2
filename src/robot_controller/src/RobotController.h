@@ -2,6 +2,7 @@
 #define ROBOTCONTROLLER_H
 
 #include <QObject>
+#include <QTimer>
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 
@@ -35,16 +36,24 @@ public slots:
     void turnRight();
     void stop();
 
+private slots:
+    void publishCurrent();
+
 private:
     void publishVelocity(double linear, double angular);
     void rebuildPublisher();
+    void startPublishing();
+    void stopPublishing();
 
     std::shared_ptr<rclcpp::Node> node_;
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmdPub_;
+    QTimer *publishTimer_;
     QString namespace_;
     QString cmdVelExplicitTopic_;
     double linearSpeed_ = 0.5;
     double angularSpeed_ = 0.8;
+    double cmdLinear_ = 0.0;
+    double cmdAngular_ = 0.0;
 };
 
 #endif

@@ -186,4 +186,16 @@
     <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
   </joint>
 
+  <!-- 后置摄像头（尾部朝后） -->
+  <link name="${namespace}camera_rear_link">
+    <visual>
+      <geometry><box size="0.015 0.03 0.015"/></geometry>
+      <material name="blue"/>
+    </visual>
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+  </link>
+
 </robot>

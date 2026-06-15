@@ -28,7 +28,7 @@ void MainWindow::setupUI()
     auto *videoLayout = new QVBoxLayout(videoGroup);
 
     frontCamWidget = new RosCameraWidget("/robot_01/camera/image_raw", this);
-    backCamWidget = new RosCameraWidget("/robot_01/camera/image_raw", this);
+    backCamWidget = new RosCameraWidget("/robot_01/rear_camera/image_raw", this);
     frontCamWidget->setMinimumSize(320, 200);
     backCamWidget->setMinimumSize(320, 200);
 
@@ -86,6 +86,7 @@ void MainWindow::updateCameraTopics()
     QString ns = controller->ns();
     if (!ns.isEmpty()) {
         frontCamWidget->attach(node_, "/" + ns + "/camera/image_raw");
+        backCamWidget->attach(node_, "/" + ns + "/rear_camera/image_raw");
     }
 }
 
