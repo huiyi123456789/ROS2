@@ -34,20 +34,23 @@
       </visual>
     </link>
 
+    <!-- ===== 左驱动轮（圆柱体绕X轴旋转90°，对称轴从Z变为Y） ===== -->
     <link name="wheel_left_link">
       <inertial>
         <mass>0.1</mass>
         <inertia>
           <ixx>6.6e-5</ixx><ixy>0</ixy><ixz>0</ixz>
-          <iyy>6.6e-5</iyy><iyz>0</iyz>
-          <izz>1.25e-4</izz>
+          <iyy>1.25e-4</iyy><iyz>0</iyz>
+          <izz>6.6e-5</izz>
         </inertia>
       </inertial>
       <collision name="collision">
+        <pose>0 0 0 1.5708 0 0</pose>
         <geometry><cylinder><radius>0.05</radius><length>0.02</length></cylinder></geometry>
         <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
       </collision>
       <visual name="visual">
+        <pose>0 0 0 1.5708 0 0</pose>
         <geometry><cylinder><radius>0.05</radius><length>0.02</length></cylinder></geometry>
         <material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material>
       </visual>
@@ -63,20 +66,23 @@
       <pose>0 0.18 -0.075 0 0 0</pose>
     </joint>
 
+    <!-- ===== 右驱动轮 ===== -->
     <link name="wheel_right_link">
       <inertial>
         <mass>0.1</mass>
         <inertia>
           <ixx>6.6e-5</ixx><ixy>0</ixy><ixz>0</ixz>
-          <iyy>6.6e-5</iyy><iyz>0</iyz>
-          <izz>1.25e-4</izz>
+          <iyy>1.25e-4</iyy><iyz>0</iyz>
+          <izz>6.6e-5</izz>
         </inertia>
       </inertial>
       <collision name="collision">
+        <pose>0 0 0 1.5708 0 0</pose>
         <geometry><cylinder><radius>0.05</radius><length>0.02</length></cylinder></geometry>
         <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
       </collision>
       <visual name="visual">
+        <pose>0 0 0 1.5708 0 0</pose>
         <geometry><cylinder><radius>0.05</radius><length>0.02</length></cylinder></geometry>
         <material><ambient>0.1 0.1 0.1 1</ambient></material>
       </visual>
@@ -92,20 +98,23 @@
       <pose>0 -0.18 -0.075 0 0 0</pose>
     </joint>
 
+    <!-- ===== 前滚轮（支撑轮，圆柱体绕X轴旋转90°） ===== -->
     <link name="roller_front_link">
       <inertial>
         <mass>0.03</mass>
         <inertia>
-          <ixx>5e-6</ixx><ixy>0</ixy><ixz>0</ixz>
-          <iyy>5e-6</iyy><iyz>0</iyz>
-          <izz>5e-6</izz>
+          <ixx>6.9e-6</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>9.4e-6</iyy><iyz>0</iyz>
+          <izz>6.9e-6</izz>
         </inertia>
       </inertial>
       <collision name="collision">
+        <pose>0 0 0 1.5708 0 0</pose>
         <geometry><cylinder><radius>0.025</radius><length>0.03</length></cylinder></geometry>
         <surface><friction><ode><mu>0.8</mu><mu2>0.8</mu2></ode></friction></surface>
       </collision>
       <visual name="visual">
+        <pose>0 0 0 1.5708 0 0</pose>
         <geometry><cylinder><radius>0.025</radius><length>0.03</length></cylinder></geometry>
         <material><ambient>0.6 0.6 0.6 1</ambient></material>
       </visual>
@@ -122,20 +131,23 @@
       <pose>0.18 0 -0.10 0 0 0</pose>
     </joint>
 
+    <!-- ===== 后滚轮（支撑轮） ===== -->
     <link name="roller_rear_link">
       <inertial>
         <mass>0.03</mass>
         <inertia>
-          <ixx>5e-6</ixx><ixy>0</ixy><ixz>0</ixz>
-          <iyy>5e-6</iyy><iyz>0</iyz>
-          <izz>5e-6</izz>
+          <ixx>6.9e-6</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>9.4e-6</iyy><iyz>0</iyz>
+          <izz>6.9e-6</izz>
         </inertia>
       </inertial>
       <collision name="collision">
+        <pose>0 0 0 1.5708 0 0</pose>
         <geometry><cylinder><radius>0.025</radius><length>0.03</length></cylinder></geometry>
         <surface><friction><ode><mu>0.8</mu><mu2>0.8</mu2></ode></friction></surface>
       </collision>
       <visual name="visual">
+        <pose>0 0 0 1.5708 0 0</pose>
         <geometry><cylinder><radius>0.025</radius><length>0.03</length></cylinder></geometry>
         <material><ambient>0.6 0.6 0.6 1</ambient></material>
       </visual>
@@ -157,11 +169,8 @@
       <inertial>
         <mass>0.01</mass>
         <inertia>
-          <ixx>1e-6</ixx>
-          <ixy>0</ixy>
-          <ixz>0</ixz>
-          <iyy>1e-6</iyy>
-          <iyz>0</iyz>
+          <ixx>1e-6</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>1e-6</iyy><iyz>0</iyz>
           <izz>1e-6</izz>
         </inertia>
       </inertial>
@@ -214,7 +223,6 @@
         </ray>
         <plugin name="gpu_lidar_plugin" filename="libgazebo_ros_ray_sensor.so">
           <ros>
-            <namespace>robot</namespace>
             <argument>~/out:=scan</argument>
           </ros>
           <output_type>sensor_msgs/LaserScan</output_type>
@@ -285,9 +293,6 @@
           </linear_acceleration>
         </imu>
         <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
-          <ros>
-            <namespace>robot</namespace>
-          </ros>
           <frame_name>imu_link</frame_name>
         </plugin>
       </sensor>
@@ -345,9 +350,6 @@
           </noise>
         </camera>
         <plugin name="camera_plugin" filename="libgazebo_ros_camera.so">
-          <ros>
-            <namespace>robot</namespace>
-          </ros>
           <frame_name>camera_link</frame_name>
         </plugin>
       </sensor>
@@ -359,10 +361,9 @@
       <pose>0.18 0 0.08 0 0 0</pose>
     </joint>
 
-    <!-- ===== Gazebo ROS 差分驱动插件 ===== -->
+    <!-- ===== Gazebo ROS 差分驱动插件（去掉内部namespace，由-robot_namespace统一管理） ===== -->
     <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
       <ros>
-        <namespace>robot</namespace>
       </ros>
       <update_rate>30</update_rate>
       <left_joint>wheel_left_joint</left_joint>
@@ -383,9 +384,6 @@
     <!-- ===== 关节状态发布插件 ===== -->
     <plugin name="joint_state_publisher"
             filename="libgazebo_ros_joint_state_publisher.so">
-      <ros>
-        <namespace>robot</namespace>
-      </ros>
       <update_rate>30</update_rate>
       <joint_name>wheel_left_joint</joint_name>
       <joint_name>wheel_right_joint</joint_name>

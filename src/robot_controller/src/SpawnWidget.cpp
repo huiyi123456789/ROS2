@@ -76,7 +76,7 @@ void SpawnWidget::setupUI()
     robotYEdit_ = new QLineEdit("0.0");
     spawnLayout->addWidget(robotYEdit_, 1, 3);
     spawnLayout->addWidget(new QLabel("Z:"), 2, 0);
-    robotZEdit_ = new QLineEdit("0.1");
+    robotZEdit_ = new QLineEdit("0.05");
     spawnLayout->addWidget(robotZEdit_, 2, 1);
 
     btnSpawn_ = new QPushButton("生成机器人");
@@ -330,17 +330,17 @@ void SpawnWidget::deleteSensor()
 void SpawnWidget::runScenario(int id)
 {
     if (id == 1) {
-        callSpawnService("nav_robot", robotSdfContent_, -2.0, 0.0, 0.1);
+        callSpawnService("nav_robot", robotSdfContent_, -2.0, 0.0, 0.05);
     } else if (id == 2) {
-        callSpawnService("robot_leader", robotSdfContent_, -2.0, 0.0, 0.1);
+        callSpawnService("robot_leader", robotSdfContent_, -2.0, 0.0, 0.05);
         QTimer::singleShot(600, this, [this]() {
-            callSpawnService("robot_left", robotSdfContent_, -3.0, -1.0, 0.1);
+            callSpawnService("robot_left", robotSdfContent_, -3.0, -1.0, 0.05);
         });
         QTimer::singleShot(1200, this, [this]() {
-            callSpawnService("robot_right", robotSdfContent_, -3.0, 1.0, 0.1);
+            callSpawnService("robot_right", robotSdfContent_, -3.0, 1.0, 0.05);
         });
     } else if (id == 3) {
-        callSpawnService("sensor_bot", robotSdfContent_, -1.0, 0.0, 0.1);
+        callSpawnService("sensor_bot", robotSdfContent_, -1.0, 0.0, 0.05);
         QTimer::singleShot(1000, this, [this]() {
             callSpawnService("extra_lidar", makeLidar2DSdf("extra_lidar", -1.0, 0.0, 0.25),
                              -1.0, 0.0, 0.25);

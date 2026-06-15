@@ -90,7 +90,7 @@ def generate_launch_description():
             '-robot_namespace', 'robot_01',
             '-x', '-2.0',
             '-y', '0.0',
-            '-z', '0.1',
+            '-z', '0.05',
         ],
         output='screen',
         additional_env={'GAZEBO_MODEL_PATH': gazebo_model_path},
@@ -102,5 +102,5 @@ def generate_launch_description():
         spawn_robot,
         LogInfo(msg=['===== 教室仿真环境启动完成 =====']),
         LogInfo(msg=['查看 Topics: ros2 topic list']),
-        LogInfo(msg=['键盘控制: ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/robot_01/cmd_vel']),
+        LogInfo(msg=['键盘控制: ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/robot_01/cmd_vel']),
     ])
