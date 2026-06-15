@@ -1,8 +1,7 @@
 #include "RobotController.h"
-#include <QTimer>
 
 RobotController::RobotController(std::shared_ptr<rclcpp::Node> node)
-    : node_(node)
+    : node_(node), stopped_(true)
 {
     namespace_ = "robot_01";
     rebuildPublisher();
@@ -10,6 +9,7 @@ RobotController::RobotController(std::shared_ptr<rclcpp::Node> node)
     publishTimer_ = new QTimer(this);
     publishTimer_->setInterval(50);
     connect(publishTimer_, &QTimer::timeout, this, &RobotController::publishCurrent);
+    publishTimer_->start();
 }
 
 RobotController::~RobotController() = default;
@@ -68,53 +68,44 @@ void RobotController::publishVelocity(double linear, double angular)
 
 void RobotController::publishCurrent()
 {
-    publishVelocity(cmdLinear_, cmdAngular_);
-}
-
-void RobotController::startPublishing()
-{
-    if (!publishTimer_->isActive()) {
-        publishTimer_->start();
+    if (stopped_) {
+        publishVelocity(0.0, 0.0);
+    } else {
+        publishVelocity(cmdLinear_, cmdAngular_);
     }
-}
-
-void RobotController::stopPublishing()
-{
-    publishTimer_->stop();
 }
 
 void RobotController::moveForward()
 {
+    stopped_ = false;
     cmdLinear_ = linearSpeed_;
     cmdAngular_ = 0.0;
-    startPublishing();
 }
 
 void RobotController::moveBackward()
 {
+    stopped_ = false;
     cmdLinear_ = -linearSpeed_;
     cmdAngular_ = 0.0;
-    startPublishing();
 }
 
 void RobotController::turnLeft()
 {
+    stopped_ = false;
     cmdLinear_ = 0.0;
     cmdAngular_ = angularSpeed_;
-    startPublishing();
 }
 
 void RobotController::turnRight()
 {
+    stopped_ = false;
     cmdLinear_ = 0.0;
     cmdAngular_ = -angularSpeed_;
-    startPublishing();
 }
 
 void RobotController::stop()
 {
+    stopped_ = true;
     cmdLinear_ = 0.0;
     cmdAngular_ = 0.0;
-    stopPublishing();
-    publishVelocity(0.0, 0.0);
 }

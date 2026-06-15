@@ -25,6 +25,8 @@ public:
     void setCmdVelTopic(const QString &topic);
     QString cmdVelTopic() const;
 
+    bool isStopped() const { return stopped_; }
+
 signals:
     void namespaceChanged(const QString &ns);
     void velocityChanged(double linear, double angular);
@@ -42,8 +44,6 @@ private slots:
 private:
     void publishVelocity(double linear, double angular);
     void rebuildPublisher();
-    void startPublishing();
-    void stopPublishing();
 
     std::shared_ptr<rclcpp::Node> node_;
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmdPub_;
@@ -54,6 +54,7 @@ private:
     double angularSpeed_ = 0.8;
     double cmdLinear_ = 0.0;
     double cmdAngular_ = 0.0;
+    bool stopped_ = true;
 };
 
 #endif

@@ -177,7 +177,7 @@ void RobotControlWidget::setupUI()
     connect(btnLeft_, &QPushButton::released, controller_, &RobotController::stop);
     connect(btnRight_, &QPushButton::pressed, controller_, &RobotController::turnRight);
     connect(btnRight_, &QPushButton::released, controller_, &RobotController::stop);
-    connect(btnStop_, &QPushButton::clicked, this, [this]() {
+    connect(btnStop_, &QPushButton::pressed, this, [this]() {
         controller_->stop();
         if (keyboardEnabled_) {
             setKeyboardEnabled(false);
