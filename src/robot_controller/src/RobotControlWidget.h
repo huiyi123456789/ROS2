@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QLineEdit>
+#include <QEvent>
 #include <rclcpp/rclcpp.hpp>
 #include <gazebo_msgs/srv/get_model_list.hpp>
 
@@ -23,6 +24,9 @@ public:
 
     void setKeyboardEnabled(bool enabled);
     bool isKeyboardEnabled() const;
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 signals:
     void statusMessage(const QString &msg);

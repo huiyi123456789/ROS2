@@ -186,7 +186,7 @@ class SensorManager(Node):
       <sensor name="camera" type="camera">
         <always_on>1</always_on>
         <update_rate>{fps}</update_rate>
-        <visualize>true</visualize>
+        <visualize>false</visualize>
         <camera>
           <horizontal_fov>1.047</horizontal_fov>
           <image>

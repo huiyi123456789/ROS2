@@ -63,6 +63,11 @@ void MainWindow::setupUI()
 
     connect(controller, &RobotController::namespaceChanged, this, [this](const QString &ns) {
         updateCameraTopics();
+        if (ns.isEmpty()) {
+            mapWidget->setScanTopic("/scan");
+        } else {
+            mapWidget->setScanTopic("/" + ns + "/scan");
+        }
     });
 
     connect(controlWidget, &RobotControlWidget::statusMessage,
@@ -108,57 +113,75 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
 void MainWindow::handleKeyEvent(QKeyEvent *event, bool pressed)
 {
     if (!controlWidget->isKeyboardEnabled()) {
-        QMainWindow::keyPressEvent(event);
+        if (pressed)
+            QMainWindow::keyPressEvent(event);
+        else
+            QMainWindow::keyReleaseEvent(event);
         return;
     }
 
-    bool handled = true;
+    if (event->isAutoRepeat())
+        return;
+
+    int key = event->key();
+    bool isMovementKey = (key == Qt::Key_W || key == Qt::Key_Up ||
+                          key == Qt::Key_S || key == Qt::Key_Down ||
+                          key == Qt::Key_A || key == Qt::Key_Left ||
+                          key == Qt::Key_D || key == Qt::Key_Right);
+
+    if (!isMovementKey) {
+        if (key == Qt::Key_Space || key == Qt::Key_X) {
+            if (pressed) {
+                controller->stop();
+                pressedKeys_.clear();
+            }
+            return;
+        }
+        if (pressed)
+            QMainWindow::keyPressEvent(event);
+        else
+            QMainWindow::keyReleaseEvent(event);
+        return;
+    }
+
     if (pressed) {
-        switch (event->key()) {
-        case Qt::Key_W:
-        case Qt::Key_Up:
+        pressedKeys_.insert(key);
+        switch (key) {
+        case Qt::Key_W: case Qt::Key_Up:
             controller->moveForward();
             break;
-        case Qt::Key_S:
-        case Qt::Key_Down:
+        case Qt::Key_S: case Qt::Key_Down:
             controller->moveBackward();
             break;
-        case Qt::Key_A:
-        case Qt::Key_Left:
+        case Qt::Key_A: case Qt::Key_Left:
             controller->turnLeft();
             break;
-        case Qt::Key_D:
-        case Qt::Key_Right:
+        case Qt::Key_D: case Qt::Key_Right:
             controller->turnRight();
-            break;
-        case Qt::Key_Space:
-        case Qt::Key_X:
-            controller->stop();
-            break;
-        default:
-            handled = false;
             break;
         }
     } else {
-        switch (event->key()) {
-        case Qt::Key_W:
-        case Qt::Key_Up:
-        case Qt::Key_S:
-        case Qt::Key_Down:
-        case Qt::Key_A:
-        case Qt::Key_Left:
-        case Qt::Key_D:
-        case Qt::Key_Right:
+        pressedKeys_.remove(key);
+        if (pressedKeys_.isEmpty()) {
             controller->stop();
-            break;
-        default:
-            handled = false;
-            break;
+        } else {
+            int lastKey = *pressedKeys_.begin();
+            switch (lastKey) {
+            case Qt::Key_W: case Qt::Key_Up:
+                controller->moveForward();
+                break;
+            case Qt::Key_S: case Qt::Key_Down:
+                controller->moveBackward();
+                break;
+            case Qt::Key_A: case Qt::Key_Left:
+                controller->turnLeft();
+                break;
+            case Qt::Key_D: case Qt::Key_Right:
+                controller->turnRight();
+                break;
+            }
         }
     }
-
-    if (!handled)
-        QMainWindow::keyPressEvent(event);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

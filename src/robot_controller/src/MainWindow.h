@@ -7,6 +7,7 @@
 #include <QTabWidget>
 #include <QStatusBar>
 #include <QKeyEvent>
+#include <QSet>
 #include <rclcpp/rclcpp.hpp>
 #include "VideoWidget.h"
 #include "RosCameraWidget.h"
@@ -46,6 +47,7 @@ private:
     RobotControlWidget *controlWidget;
     SpawnWidget *spawnWidget;
     QTabWidget *rightTabs;
+    QSet<int> pressedKeys_;
 };
 
 #endif

@@ -48,6 +48,7 @@ private:
     std::shared_ptr<rclcpp::Node> node_;
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmdPub_;
     QTimer *publishTimer_;
+    QTimer *safetyTimer_;
     QString namespace_;
     QString cmdVelExplicitTopic_;
     double linearSpeed_ = 0.5;

@@ -8,6 +8,7 @@ install(DIRECTORY
   worlds
   models
   scripts
+  config
   DESTINATION share/${PROJECT_NAME}
 )
 

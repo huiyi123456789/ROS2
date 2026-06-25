@@ -7,6 +7,8 @@ find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(gazebo_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Multimedia MultimediaWidgets)
 
@@ -39,6 +41,8 @@ ament_target_dependencies(robot_controller_node
   nav_msgs
   sensor_msgs
   gazebo_msgs
+  tf2_ros
+  tf2_geometry_msgs
 )
 
 install(TARGETS robot_controller_node DESTINATION lib/${PROJECT_NAME})

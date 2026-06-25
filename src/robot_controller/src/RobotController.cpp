@@ -10,6 +10,15 @@ RobotController::RobotController(std::shared_ptr<rclcpp::Node> node)
     publishTimer_->setInterval(50);
     connect(publishTimer_, &QTimer::timeout, this, &RobotController::publishCurrent);
     publishTimer_->start();
+
+    safetyTimer_ = new QTimer(this);
+    safetyTimer_->setSingleShot(true);
+    safetyTimer_->setInterval(5000);
+    connect(safetyTimer_, &QTimer::timeout, this, [this]() {
+        if (!stopped_) {
+            stop();
+        }
+    });
 }
 
 RobotController::~RobotController() = default;
@@ -80,6 +89,7 @@ void RobotController::moveForward()
     stopped_ = false;
     cmdLinear_ = linearSpeed_;
     cmdAngular_ = 0.0;
+    safetyTimer_->start();
 }
 
 void RobotController::moveBackward()
@@ -87,6 +97,7 @@ void RobotController::moveBackward()
     stopped_ = false;
     cmdLinear_ = -linearSpeed_;
     cmdAngular_ = 0.0;
+    safetyTimer_->start();
 }
 
 void RobotController::turnLeft()
@@ -94,6 +105,7 @@ void RobotController::turnLeft()
     stopped_ = false;
     cmdLinear_ = 0.0;
     cmdAngular_ = angularSpeed_;
+    safetyTimer_->start();
 }
 
 void RobotController::turnRight()
@@ -101,6 +113,7 @@ void RobotController::turnRight()
     stopped_ = false;
     cmdLinear_ = 0.0;
     cmdAngular_ = -angularSpeed_;
+    safetyTimer_->start();
 }
 
 void RobotController::stop()
@@ -108,4 +121,5 @@ void RobotController::stop()
     stopped_ = true;
     cmdLinear_ = 0.0;
     cmdAngular_ = 0.0;
+    safetyTimer_->stop();
 }

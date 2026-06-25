@@ -481,7 +481,7 @@ QString SpawnWidget::makeCameraSdf(const QString &name, double x, double y, doub
         "        <material><ambient>0 1 0 1</ambient></material>"
         "      </visual>"
         "      <sensor name=\"camera\" type=\"camera\">"
-        "        <always_on>1</always_on><update_rate>30</update_rate><visualize>true</visualize>"
+        "        <always_on>1</always_on><update_rate>30</update_rate><visualize>false</visualize>"
         "        <camera>"
         "          <horizontal_fov>1.047</horizontal_fov>"
         "          <image><width>640</width><height>480</height><format>R8G8B8</format></image>"

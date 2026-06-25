@@ -9,7 +9,10 @@
 import os
 from ament_index_python.packages import get_package_share_directory, get_packages_with_prefixes
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess, LogInfo
+from launch.actions import ExecuteProcess, LogInfo, TimerAction
+from launch.substitutions import Command, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
+from launch_ros.actions import Node
 
 
 def _clean_gazebo_model_path():
@@ -88,7 +91,7 @@ def generate_launch_description():
             '-entity', 'robot_01',
             '-file', robot_sdf,
             '-robot_namespace', 'robot_01',
-            '-x', '-2.0',
+            '-x', '0.0',
             '-y', '0.0',
             '-z', '0.05',
         ],
@@ -96,10 +99,49 @@ def generate_launch_description():
         additional_env={'GAZEBO_MODEL_PATH': gazebo_model_path},
     )
 
+    slam_params_file = os.path.join(pkg_dir, 'config', 'slam_toolbox_params.yaml')
+
+    urdf_path = PathJoinSubstitution([
+        FindPackageShare('turtlebot3_description'),
+        'urdf', 'turtlebot3_waffle.urdf'
+    ])
+
+    robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        output='screen',
+        parameters=[{
+            'use_sim_time': True,
+            'robot_description': Command(['xacro ', urdf_path, ' namespace:=', '']),
+        }],
+        remappings=[
+            ('joint_states', '/robot_01/joint_states'),
+        ],
+    )
+
+    slam_toolbox_node = Node(
+        package='slam_toolbox',
+        executable='async_slam_toolbox_node',
+        name='slam_toolbox',
+        output='screen',
+        parameters=[
+            slam_params_file,
+            {'use_sim_time': True},
+        ],
+        remappings=[
+            ('/scan', '/robot_01/scan'),
+        ],
+    )
+
     return LaunchDescription([
         gzserver,
         gzclient,
         spawn_robot,
+        TimerAction(
+            period=3.0,
+            actions=[robot_state_publisher, slam_toolbox_node],
+        ),
         LogInfo(msg=['===== 教室仿真环境启动完成 =====']),
         LogInfo(msg=['查看 Topics: ros2 topic list']),
         LogInfo(msg=['键盘控制: ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/robot_01/cmd_vel']),

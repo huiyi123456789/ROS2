@@ -5,6 +5,7 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QTimer>
+#include <QMouseEvent>
 #include <cmath>
 #include <set>
 
@@ -129,6 +130,13 @@ void RobotControlWidget::setupUI()
     btnBackward_ = new QPushButton("▼  后退");
     btnLeft_ = new QPushButton("◀  左转");
     btnRight_ = new QPushButton("▶  右转");
+
+    // 安装事件过滤器：按键按下时 grabMouse 确保松开事件一定被捕获
+    btnForward_->installEventFilter(this);
+    btnBackward_->installEventFilter(this);
+    btnLeft_->installEventFilter(this);
+    btnRight_->installEventFilter(this);
+
     btnStop_ = new QPushButton("■  急停");
     btnStop_->setStyleSheet(
         "QPushButton { background-color: #e74c3c; color: white; font-weight: bold;"
@@ -286,4 +294,18 @@ bool RobotControlWidget::isKeyboardEnabled() const
 void RobotControlWidget::setKeyboardEnabled(bool enabled)
 {
     btnKeyboardToggle_->setChecked(enabled);
+}
+
+bool RobotControlWidget::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == btnForward_ || obj == btnBackward_ || obj == btnLeft_ || obj == btnRight_) {
+        if (event->type() == QEvent::MouseButtonPress) {
+            auto *w = qobject_cast<QWidget *>(obj);
+            if (w) w->grabMouse();
+        } else if (event->type() == QEvent::MouseButtonRelease) {
+            auto *w = qobject_cast<QWidget *>(obj);
+            if (w) w->releaseMouse();
+        }
+    }
+    return QWidget::eventFilter(obj, event);
 }
